@@ -14,16 +14,12 @@ def hod_rd_sub1(mean):
 def hod_rd_sub2(mean1):
     for i in range(my+lmd,0, -(lmd-2)):
         ver_rd(i,mean1)
-def hod_rd_sub2(mean1):
-    for i in range(my+lmd,0, -(lmd-2)):
-        ver_rd(i,mean1)
+
 
 def hor_rd(mean):
     hod_rd_sub1(mean)
     hod_rd_sub2(mean)
-def hor_rd(mean):
-    hod_rd_sub1(mean)
-    hod_rd_sub2(mean)
+
 
 def ver_rd(x,mean):
     lm1 = lim1
@@ -38,20 +34,6 @@ def ver_rd(x,mean):
         res = np.array(res)
         if(abs(res[1]-mean[1])<=15 and abs(res[2]-mean[2])<=15):
             mean = (4*res+6*mean)/10
-def ver_rd(x,mean):
-    lm1 = lim1
-    lm2 = lim2
-    for i in range(mx,lmd+1,-(lmd-10)):
-        lm1 += lm1*0.03
-        lm2 += lm2*0.03
-        low = mean - [0,lm1,lm2]
-        high = mean + [180,lm1,lm2]
-        newscr[i-lmd:i, x:x+lmd] = cv2.inRange(hls[i-lmd:i, x:x+lmd],low,high)
-        res = [0]+[np.mean(hls[i-lmd:i, x:x+lmd,j]) for j in range(1,3)]
-        res = np.array(res)
-        if(abs(res[1]-mean[1])<=15 and abs(res[2]-mean[2])<=15):
-            mean = (4*res+6*mean)/10
-
 
 # lim = 4*std
 lmd = 40
