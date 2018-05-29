@@ -7,6 +7,7 @@ Created on Tue May 29 18:10:17 2018
 """
 
 import random
+
 def AstarAlgo(start_node):
     targ = 0
     shape = [20,20]
