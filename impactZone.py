@@ -13,6 +13,7 @@ from AstarAlgo import AstarAlgo
 def impactZone(obstPred):
     blank = cv2.imread('blank.png',0)
     blank = cv2.resize(blank,(680,480))
+    
     # blank = cv2.cvtColor(blank,cv2.COLOR_BGR2GRAY)
     for a,b in obstPred:
         dx = (b[0] - a[0])

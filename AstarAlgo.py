@@ -6,10 +6,12 @@ Created on Tue May 29 18:10:17 2018
 @author: shreyashkawalkar
 """
 
-import random
 import numpy as np
 import math
-from steer import steer
+import sys
+from socket import socket, AF_INET, SOCK_DGRAM
+
+#from steer import steer
 
 def slopes(pathpts):
     slopeAngle = []
@@ -19,11 +21,11 @@ def slopes(pathpts):
     return slopeAngle
 
 def AstarAlgo(obsTopo):
-    targ = 0
-    shape = [20,20]
+
+    shape = [480,680]
     close = [[0 for i in range(shape[1])] for j in range(shape[0])]
-    start = [19,10]
-    val = [[random.randint(1, 255) for i in range(shape[1])]for j in range(shape[0])]
+    start = [480,340]
+    val =   obsTopo
     gval = [[999999 for i in range(shape[1])]for j in range(shape[0])]
     hval = [[i for i in range(shape[1])]for j in range(shape[0])]
     fval = [[999999 for i in range(shape[1])]for j in range(shape[0])]
@@ -32,6 +34,13 @@ def AstarAlgo(obsTopo):
     gval[start[0]][start[1]] = 0
     parent[start[0]][start[1]] = -1
     
+    def resolveReqPath():
+        node = reqpath
+        finalPath = []
+        while node!=start and node!=0:
+            node = parent[node[0]][node[1]]
+            finalPath.append(node)
+        return finalPath
     
     def neigh(pos):
         ngh = []
@@ -43,11 +52,12 @@ def AstarAlgo(obsTopo):
         ngh.append([pos[0]-1,pos[1]+1])
         ngh.append([pos[0]-1, pos[1]-1])
         return ngh
+    
     def cost(par,child):
-        return (val[child[0]][child[1]] - val[par[0]][par[1]])
+        return 255-val[child[0],child[1]]#) - val[par[0],par[1]])
     
     reqpath = start
-    minf = 0
+    minf = 99999999
     
     def derive(node):
         print(node,"->",end = " ")
@@ -57,13 +67,21 @@ def AstarAlgo(obsTopo):
             print(node,"->",end=" ")
             
     def path(node):
+        global minf
+        global reqpath
         if node in target:
-    #         if fval[node[0]][node[1]]<minf:
-    #             minf = fval[node[0]][node[1]]
-    #             reqpath = node
+            if fval[node[0]][node[1]]<minf:
+                 minf = fval[node[0]][node[1]]
+                 reqpath = node
+                 print("update required path")
             derive(node)
             print("target: fval",fval[node[0]][node[1]])
             return
+        
+        if obsTopo[node[0],node[1]] == 0:
+            return
+            
+        
         fsort = []
         nsort=[]
         neighlist = neigh(node)
@@ -90,5 +108,15 @@ def AstarAlgo(obsTopo):
         
         for nd in srt:
                 path(nd)
-                   
-    steer(slopes(path([480,340])))
+    path([480,340])
+    finalPath = resolveReqPath() 
+                  
+    slopes(finalPath)
+    SERVER_IP   = '127.0.0.1'
+    PORT_NUMBER = 7000
+#    SIZE = 1024
+#        print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP, PORT_NUMBER))
+    mySocket = socket( AF_INET, SOCK_DGRAM )
+    mySocket.sendto(b'cool',(SERVER_IP,PORT_NUMBER))
+    mySocket.sendto(b'cool',(SERVER_IP,PORT_NUMBER))
+    mySocket.sendto(b'cool',(SERVER_IP,PORT_NUMBER))

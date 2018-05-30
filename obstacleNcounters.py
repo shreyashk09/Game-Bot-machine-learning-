@@ -5,6 +5,8 @@ import time
 import cv2
 import threading
 from pathInertiaModel import pathInertiaModel
+from socket import socket, gethostbyname, AF_INET, SOCK_DGRAM
+import sys
 
 def obstacleNcounters():
     def hod_rd_sub1(mean):
@@ -22,6 +24,9 @@ def obstacleNcounters():
     
     
     def ver_rd(x,mean):
+        global lim1
+        global lim2
+        global lmd
         lm1 = lim1
         lm2 = lim2
         for i in range(mx,lmd+1,-(lmd-10)):
@@ -45,24 +50,34 @@ def obstacleNcounters():
     mx = shape[0]
     my = shape[1]//2
     print("running")
-    kkk = 300*8*6
+#    kkk = 300*8*6
     mask_prev1 = np.zeros((shape[0],shape[1]),np.uint8)
 #    mask_prev2 = np.zeros((shape[0],shape[1]),np.uint8)
     mean_prev = 0
-    vrec = cv2.VideoCapture('v4.mp4',0)
+#    vrec = cv2.VideoCapture('v4.mp4',0)
     
-    while(kkk):
-        kkk-=1
-        ret, scr = vrec.read()
+#    while(kkk):
+#        kkk-=1
+#        ret, scr = vrec.read()
+    PORT_NUMBER = 4000
+    SIZE = 1024*1024
+    hostName = gethostbyname( '0.0.0.0' )
+
+    mySocket = socket( AF_INET, SOCK_DGRAM )
+    mySocket.bind( (hostName, PORT_NUMBER) )
+
+    print ("Test server listening on port {0}\n".format(PORT_NUMBER))
     
     while True:
 #        start_time = time.time()
         
         obstacleContoursPts = []
-
-        ret, scr = vrec.read()
-        if not ret:
-                break
+        scr = None
+        while not scr:
+            (scr,addr) = mySocket.recvfrom(SIZE)
+#        ret, scr = vrec.read()
+#        if not ret:
+#                break
         scr = cv2.resize(scr, (680,480)) 
         scr2 = scr
         newscr = np.zeros((shape[0],shape[1]),np.uint8)
@@ -162,4 +177,4 @@ def obstacleNcounters():
             cv2.destroyAllWindows()
             break
     cv2.destroyAllWindows()
-obstacleNcounters()
+#obstacleNcounters()
