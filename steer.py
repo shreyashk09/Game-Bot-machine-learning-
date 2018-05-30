@@ -12,6 +12,9 @@ import time
 import threading
 import random
 from collections import deque
+import sys
+from socket import socket, AF_INET, SOCK_DGRAM, gethostbyname
+import sys
 
 
 class DQNAgent:
@@ -27,6 +30,7 @@ class DQNAgent:
         self.name = 'steerDeepQL'
         self.modelname = 'xgbmodel'
         self.load_bst()
+        
     
     def xgbmodel_bld(self,data,label):
         param = {'base_score' : 1, 'max_depth': 7, 'eta': 0.1, #'updater':'refresh',
@@ -105,34 +109,58 @@ class DQNAgent:
         stt = np.random.randint(175, size=15)/100
         return stt
     
+    def writeSocketIni(self):
+        SERVER_IP   = '192.168.225.122'
+        PORT_NUMBER = 6000
+        SIZE = 10
+        print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP, PORT_NUMBER))
+
+        mySocket = socket( AF_INET, SOCK_DGRAM )
+        return mySocket
+
+        
+    def readSocketIni(self):
+        PORT_NUMBER = 5000
+        SIZE = 10
+        hostName = gethostbyname( '0.0.0.0' )
+        mySocket = socket( AF_INET, SOCK_DGRAM )
+        mySocket.bind( (hostName, PORT_NUMBER) )
+        return mySocket
+        
+    
 def steer(GameOn):
     
     state_size = 15
-    action_size = 6
+#    action_size = 6
     agent = DQNAgent()
     state = np.zeros((15,), dtype=float)
+    execute_action(0)
     state = agent.get_nextstate()
 #     agent.load_bst()
     count = 0
     bst_target = xgb.Booster({'nthread':4})
-    st = []
-    tg = []
+#    st = []
+#    tg = []
     bst_target.load_model(agent.name)
-    
+    mysocket = agent.readSocketIni()
+    mysocket2 = agent. writeSocketIni()
     while GameOn:
-        start = time.time()
-        count += 1
+#        start = time.time()
+        (read_Action,addr) = mysocket.recvfrom(10)
         state = np.reshape(state, [1, state_size])
         action = agent.act(state)
-#         execute_action(action)
+        stract = str(action) 
+        mysocket2.sendto(action,('192.168.225.122',6000))
+        mysocket2.sendto(action,('192.168.225.122',6000))
+        
         reward, done = agent.decl_rew(state)
 #         reward = reward 
         next_state = agent.get_nextstate()
-        if(next_state == []):
+        if next_state == [] or read_Action==999:
             continue;
+        count += 1
         next_state = np.reshape(next_state, [1, state_size])
-        
-        agent.remember(state, action, reward, next_state, done)
+        agent.remember(state, read_Action, reward, next_state, done)
 #         target = bst_target.predict(xgb.DMatrix(state))
 #         if done:
 #             target[0][action] = reward
@@ -163,5 +191,5 @@ def steer(GameOn):
             t1 = threading.Thread(target=agent.replay, args=())
             t1.start()
 #         time.sleep(0.03)
-        print("FPS: ", 1.0 / (time.time() - start))
+#        print("FPS: ", 1.0 / (time.time() - start))
         

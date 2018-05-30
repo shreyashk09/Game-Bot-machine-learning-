@@ -1,10 +1,10 @@
 
 
 import numpy as np
-import pandas as pd
 import time
 import cv2
 import threading
+from pathInertiaModel import pathInertiaModel
 
 def obstacleNcounters():
     def hod_rd_sub1(mean):
@@ -47,7 +47,7 @@ def obstacleNcounters():
     print("running")
     kkk = 300*8*6
     mask_prev1 = np.zeros((shape[0],shape[1]),np.uint8)
-    mask_prev2 = np.zeros((shape[0],shape[1]),np.uint8)
+#    mask_prev2 = np.zeros((shape[0],shape[1]),np.uint8)
     mean_prev = 0
     vrec = cv2.VideoCapture('v4.mp4',0)
     
@@ -56,16 +56,14 @@ def obstacleNcounters():
         ret, scr = vrec.read()
     
     while True:
-        start_time = time.time()
-        scr = cv2.imread("dist.png",1)
-    #     if not ret:
-    #         print("not running")
-    #         break
+#        start_time = time.time()
+        
+        obstacleContoursPts = []
+
         ret, scr = vrec.read()
         if not ret:
                 break
         scr = cv2.resize(scr, (680,480)) 
-        scr1 = scr
         scr2 = scr
         newscr = np.zeros((shape[0],shape[1]),np.uint8)
     #     scr = cv2.bilateralFilter(scr,7,12,12)
@@ -74,13 +72,12 @@ def obstacleNcounters():
         std = [np.std(hls[440:480,200:480, i]) for i in range(1,3)]
         lim1 = (lim1 + 16*std[0])/5  #(1:4(4))/5
         lim2 = (lim2 + 16*std[1])/5
-    #     print(lim1,lim2)
+
         mean = np.array(mean)
         mean = 0.6*mean + mean_prev*0.4
         mean_prev = mean
-    #     print(mean)
+
         hor_rd(mean)
-        band =  cv2.bitwise_and(scr,scr,mask = newscr)
         
         gray = cv2.cvtColor(scr, cv2.COLOR_BGR2GRAY)
         mean1 = np.mean(gray[440:480,200:480])
@@ -89,7 +86,7 @@ def obstacleNcounters():
         high1 = mean1 + 25
         
         mask1 = cv2.inRange(gray,low1,high1)
-        band1 =  cv2.bitwise_and(scr,scr,mask = mask1)
+
     #     newscr = cv2.morphologyEx(newscr,cv2.MORPH_OPEN,kernel, iterations = 1)
     #     newscr = cv2.morphologyEx(newscr,cv2.MORPH_CLOSE,kernel, iterations = 1)
         
@@ -100,23 +97,7 @@ def obstacleNcounters():
         mask4 = mask_prev1 + mask3 
     #     mask_pres2 = mask_prev1
         mask_prev1 = mask3 
-        
-    #     canny = cv2.Canny(gray,10,50)
-    #     cv2.imshow("canny", canny)
-    
-    #     mask4 = cv2.morphologyEx(mask4,cv2.MORPH_OPEN,kernel, iterations = 1)
-    #     mask4 = cv2.morphologyEx(mask4,cv2.MORPH_CLOSE,kernel, iterations = 1)
-        
-        
-    #     cv2.imshow('blur',band)
-    #     cv2.imshow('mean1',band1)
-    #     cv2.imshow('band3',band3)
-    #     cv2.imshow('newscr',newscr)
-    #     cv2.imshow('mean1',mask1)
-        
-    
-    
-    
+            
         mask4 = cv2.morphologyEx(mask4,cv2.MORPH_OPEN,kernel, iterations = 1)
         mask4 = cv2.morphologyEx(mask4,cv2.MORPH_CLOSE,kernel, iterations = 1)
         cv2.imshow('band3',mask4)
@@ -128,18 +109,19 @@ def obstacleNcounters():
         
         
         
-    #     mask4 = np.uint8(mask4)
-    #     im2, contours, hierarchy = cv2.findContours(mask4, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+#        mask4 = np.uint8(mask4)
+#        im2, contours, hierarchy = cv2.findContours(mask4, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         
-    #     im3, newcontours, newhierarchy = cv2.findContours(mask4, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    #     scr1 = cv2.drawContours(scr1, newcontours, -1, (0,255,255), 3)
-    #     cv2.imshow('scr1',scr1)
+#        im3, newcontours, newhierarchy = cv2.findContours(mask4, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+#        scr1 = cv2.drawContours(scr1, newcontours, -1, (0,255,255), 3)
+#        cv2.imshow('scr1',scr1)
         
-    #     ncont=len(contours)
-    #     for i in range(ncont):
-    #         if(True):#len(contours[i])>100):
-    #             epsilon = 0.003*cv2.arcLength(contours[i], True)
-    #             contours[i] = cv2.approxPolyDP(contours[i], epsilon, True)
+#        ncont=len(contours)
+#        for i in range(ncont):
+#            if(True):#len(contours[i])>100):
+#                epsilon = 0.003*cv2.arcLength(contours[i], True)
+#                contours[i] = cv2.approxPolyDP(contours[i], epsilon, True)
+#                obstacleContoursPts += contours
             
     
             
@@ -147,7 +129,7 @@ def obstacleNcounters():
     # #     cnt = contours[-5:]
     # #     scr1 = cv2.drawContours(scr, contours, 3, (0,255,0), 3)
         
-    #     scr2 = cv2.drawContours(scr2, contours, -1, (255,0,0), 3)    
+#        scr2 = cv2.drawContours(scr2, contours, -1, (255,0,0), 3)    
     # #     scr1 = cv2.drawContours(scr, contours, 2, (0,0,255), 3)
     # #     scr1 = cv2.drawContours(scr, contours, 4, (0,255,255), 3)
     # #     scr1 = cv2.drawContours(scr, contours, 5, (255,0,255), 3)
@@ -157,13 +139,8 @@ def obstacleNcounters():
     # #     scr1 = cv2.drawContours(scr, contours, 4, (0,255,0), 3)
     # #     scr1 = cv2.drawContours(scr, contours, 5, (0,255,0), 3)
         
-        
-    #     cv2.line(scr2,(0,480),(340,240),(255,255,0),2)
-    #     cv2.line(scr2,(680,480),(340,240),(255,255,0),2)
-    #     cv2.imshow('scr',scr2)
-    #     cv2.imshow('band4',mask4)
-    #     cv2.imshow('scr2',scr2)
-    #     print(mask4.shape)
+
+        cv2.imshow('mask4',mask4)
     
         cv2.line(scr2,(0,480),(340,int(220)),(0,255,255),1)
         cv2.line(scr2,(680,480),(340,int(220)),(0,255,255),1)
@@ -177,6 +154,7 @@ def obstacleNcounters():
     
         
         cv2.imshow('scr2',scr2)
+        pathInertiaModel(obstacleContoursPts)
     #     time.sleep(0.2)
     #     print("FPS: ", 1.0 / (time.time() - start_time))
         q=cv2.waitKey(1)
@@ -184,3 +162,4 @@ def obstacleNcounters():
             cv2.destroyAllWindows()
             break
     cv2.destroyAllWindows()
+obstacleNcounters()

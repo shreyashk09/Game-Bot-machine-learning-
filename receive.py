@@ -6,7 +6,6 @@ Created on Tue May 29 20:52:36 2018
 @author: shreyashkawalkar
 """
 
-#!/usr/bin/env python
 
 from socket import socket, gethostbyname, AF_INET, SOCK_DGRAM
 import sys

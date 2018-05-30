@@ -7,8 +7,18 @@ Created on Tue May 29 18:10:17 2018
 """
 
 import random
+import numpy as np
+import math
+from steer import steer
 
-def AstarAlgo(start_node):
+def slopes(pathpts):
+    slopeAngle = []
+    for i in range(1,16):
+        pts = [np.mean(pathpts[15*(i-1):15*(i)][0]),np.mean(pathpts[15*(i-1):15*(i)][1])]
+        slopeAngle.append(math.atan2(340-pts[1],pts[0]-240) - 1.57)      
+    return slopeAngle
+
+def AstarAlgo(obsTopo):
     targ = 0
     shape = [20,20]
     close = [[0 for i in range(shape[1])] for j in range(shape[0])]
@@ -21,6 +31,7 @@ def AstarAlgo(start_node):
     parent = [[0 for i in range(shape[1])]for j in range(shape[0])]
     gval[start[0]][start[1]] = 0
     parent[start[0]][start[1]] = -1
+    
     
     def neigh(pos):
         ngh = []
@@ -40,6 +51,7 @@ def AstarAlgo(start_node):
     
     def derive(node):
         print(node,"->",end = " ")
+#        path2target.append()
         while node!=start and node!=0:
             node = parent[node[0]][node[1]]
             print(node,"->",end=" ")
@@ -78,4 +90,5 @@ def AstarAlgo(start_node):
         
         for nd in srt:
                 path(nd)
-    path(start_node)
+                   
+    steer(slopes(path([480,340])))
