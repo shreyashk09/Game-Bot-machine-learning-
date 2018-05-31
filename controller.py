@@ -14,5 +14,5 @@ from steer import steer
 mainthread1 = threading.Thread(target = obstacleNcounters, args=())
 mainthread2 = threading.Thread(target = steer, args=(True))
 mainthread1.start()
-time.sleep(0.5)
+time.sleep(0.1)
 mainthread2.start() 
