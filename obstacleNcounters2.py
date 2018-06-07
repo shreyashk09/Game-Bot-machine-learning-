@@ -45,60 +45,7 @@ def obstacleNcounters():
         if not predP[2]:
             y=-1*y
         return [x, y]
-    
-#    def proc1():
-##        label1 = []
-##        out1 = []
-##        obstPred1 = []
-#        mainout = skimage.measure.block_reduce(scr, (5,5,1), np.mean)
-#        for h in range(0,50,2):
-#            for w in range(0,136,2):
-#                info = [mainout[h,w, 0] , mainout[h,w+1,0]  , mainout[h+1,w,0] ,mainout[h+1,w+1,0] ,
-#                           mainout[h,w, 1] , mainout[h,w+1,1]  , mainout[h+1,w,1] ,mainout[h+1,w+1,1] ,
-#                           mainout[h,w, 2] , mainout[h,w+1,2]  , mainout[h+1,w,2] ,mainout[h+1,w+1,2]]
-#                a=(h+1)*5
-#                b=(w+1)*5
-#                label1.append([a*1000+b])
-#                out1.append(info)
-#                if not beg:
-#                    ind_pred = classifier.predict(np.reshape(info,(-1,12)))
-#                    ind_pred = int(ind_pred)
-#                    if  len(prev_info_countours[ind_pred]) >= 10:
-#                        sendInertia = True
-#                        del prev_info_countours[ind_pred][0]
-#                    info_countours[a*1000+b] = prev_info_countours[ind_pred] + [[a,b]]
-##                    pointsParameter = calcParameters(info_countours[a*1000+b])
-##                    pred = loaded_model.predict(np.reshape(pointsParameter,(-1,9,3)))
-##                    obstPred1.append([[a,b],pointV([a,b],pred[0])])
-#                else:
-##                    print(a*1000+b)
-##                    print(info_countours[a*1000+b])
-#                    info_countours[a*1000+b] = [[a,b]]
-    
-#    def proc2():
-##        global label2 
-##        global out2 
-##        global obstPred2 
-#        mainout1 = skimage.measure.block_reduce(scr[2:,2:], (5,5,1), np.mean)
-#        for h in range(0,49,2):
-#            for w in range(0,135,2):
-#                info = [mainout1[h,w, 0] , mainout1[h,w+1,0]  , mainout1[h+1,w,0] ,mainout1[h+1,w+1,0] ,
-#                           mainout1[h,w, 1] , mainout1[h,w+1,1]  , mainout1[h+1,w,1] ,mainout1[h+1,w+1,1] ,
-#                           mainout1[h,w, 2] , mainout1[h,w+1,2]  , mainout1[h+1,w,2] ,mainout1[h+1,w+1,2]]
-#                a = h*5+7
-#                b = w*5+7
-#                label2.append([a*1000+b])
-#                out2.append(info)
-#                if not beg:
-#                    ind_pred = classifier.predict(np.reshape(info,(-1,12)))
-#                    ind_pred = int(ind_pred)
-#                    if  len(prev_info_countours[ind_pred]) >= 10:
-#                        sendInertia = True
-#                        del prev_info_countours[ind_pred][0]
-#                    info_countours[a*1000+b] = prev_info_countours[ind_pred] + [[a,b]]
-#                    
-#                else:
-#                   info_countours[a*1000+b] = [[a,b]]
+
 
            
     PORT_NUMBER = 4000
@@ -184,30 +131,10 @@ def obstacleNcounters():
 #                    pred = loaded_model.predict(np.reshape(pointsParameter,(-1,4,3)))
 #                    obstPred.append([[a,b],pointV([a,b],pred[0])])
                 else:
-#                    print(a*1000+b)
-#                    print(info_countours[a*1000+b])
+
                     info_countours[a*100+b] = [[a,b]]
          
-#            
-#            
-#        for h in range(0,49,2):
-#            for w in range(0,135,2):
-#                info = [mainout1[h,w, 0] , mainout1[h,w+1,0]  , mainout1[h+1,w,0] ,mainout1[h+1,w+1,0] ,
-#                           mainout1[h,w, 1] , mainout1[h,w+1,1]  , mainout1[h+1,w,1] ,mainout1[h+1,w+1,1] ,
-#                           mainout1[h,w, 2] , mainout1[h,w+1,2]  , mainout1[h+1,w,2] ,mainout1[h+1,w+1,2]]
-#                a=(h*5+7)
-#                b=w*5+7
-#                label.append([a*1000+b])
-#                out.append(info)
-#                if not beg:
-#                    ind_pred = classifier.predict(np.reshape(info,(-1,12)))
-#                    ind_pred = int(ind_pred)
-#                    if  len(prev_info_countours[ind_pred]) >= 10:
-#                        sendInertia = True
-#                        del prev_info_countours[ind_pred][0]
-#                    info_countours[a*1000+b] = prev_info_countours[ind_pred] + [[a,b]]
-#                else:
-#                   info_countours[a*1000+b] = [[a,b]]
+#
         
 #        th1 = threading.Thread(target = proc1, args=())
 #        th2 = threading.Thread(target = proc2, args=())
