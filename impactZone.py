@@ -11,6 +11,8 @@ import math
 from AstarAlgo import AstarAlgo
 
 def impactZone(obstPred):
+    
+    global preImpactZone, postImpactZone
     print("points of prediction::",obstPred)
     blank = cv2.imread('blank.png',0)
     blank = cv2.resize(blank,(680,260))

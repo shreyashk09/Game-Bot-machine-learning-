@@ -243,6 +243,7 @@ def obstacleNcounters():
         print("FPS: ", 1.0 / (time.time() - start_time))
     #     time.sleep(0.2)
     #     print("FPS: ", 1.0 / (time.time() - start_time))
+    
         q=cv2.waitKey(1)
 #        if q == 27:
 #            cv2.destroyAllWindows()
